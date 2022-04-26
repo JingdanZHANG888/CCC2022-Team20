@@ -1,2 +1,2 @@
 tweepy==4.8.0
-couchdb==3.2.0
+couchdb==1.2.0
