@@ -52,9 +52,7 @@ json.dump(twitter_keys, a_file)
 a_file.close()
 
 # read files
-f1 = open('twitter_keys.json')
 f2 = open('keywords.json')
-twitter_keys = json.load(f1)
 keywords = json.load(f2)
 
 
@@ -77,10 +75,12 @@ def random20_keywords(key_word_file):
     return income_housing
 
 
-# In[30]:
+# In[39]:
 
 
 def select_a_valid_twitter_key(twitter_keys_file):
+    f1 = open('twitter_keys.json')
+    twitter_keys = json.load(f1)
     # get all valid twitter keys
     current_valid_keys = []
     least_wait_in_s = 0
