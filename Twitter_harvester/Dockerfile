@@ -1,7 +1,7 @@
 
 # Location: Melbourne
 #
-FROM python:3.6.0
+FROM python:3
 
 # Install dependencies
 RUN pip3 install tweepy
