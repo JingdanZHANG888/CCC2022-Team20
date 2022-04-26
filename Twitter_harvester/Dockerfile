@@ -4,8 +4,8 @@
 FROM python:3
 
 COPY requirements.txt requirements.txt
-USER myuser
-ADD twitter_harvest.py
+
+ADD twitter_harvest.py /
 # Install dependencies
 RUN pip3 install --user -r requirements.txt
 
