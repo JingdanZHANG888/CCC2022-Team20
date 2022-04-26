@@ -7,7 +7,7 @@
 # housing key words: https://www.wordstream.com/popular-keywords/real-estate-keywords?aliId=eyJpIjoiZXQwMHhlbHc5WTBEdksxSSIsInQiOiJiT01uUkVrY0M4eTFRSDh0ZWc2bG13PT0ifQ%253D%253D \
 # income key words: https://www.thesaurus.com/browse/income
 
-# In[11]:
+# In[49]:
 
 
 import datetime
@@ -18,7 +18,7 @@ import couchdb
 import tweepy
 
 
-# In[12]:
+# In[50]:
 
 
 FMT = '%Y-%m-%d %H:%M:%S'
@@ -37,7 +37,7 @@ mel_bounding_box = [144.9514,-37.8231,144.9749,-37.8059]
 mel_geo = '-37.840935,144.946457,200km'
 
 
-# In[32]:
+# In[51]:
 
 
 # initialize twitter keys state
@@ -56,7 +56,7 @@ f2 = open('keywords.json')
 keywords = json.load(f2)
 
 
-# In[27]:
+# In[52]:
 
 
 def random20_keywords(key_word_file):
@@ -75,7 +75,7 @@ def random20_keywords(key_word_file):
     return income_housing
 
 
-# In[39]:
+# In[53]:
 
 
 def select_a_valid_twitter_key(twitter_keys_file):
@@ -90,7 +90,7 @@ def select_a_valid_twitter_key(twitter_keys_file):
             if key["flag"] == "False":
                 current_valid_keys.append(key)
         if len(current_valid_keys) == 0:
-            print("Wait" + WAIT + "seconds for Available Twitter Key")
+            print("Wait " + str(WAIT) + " seconds for Available Twitter Key")
             time.sleep(WAIT)
         else:
             for valid_key in current_valid_keys:
@@ -99,7 +99,9 @@ def select_a_valid_twitter_key(twitter_keys_file):
                 
                 if duration_in_s >= LIMIT_IN_SEC:
                     get_key.append(valid_key)
-                    print("Find a valid twitter key:", get_key[0]["id"])
+                    position = get_key[0]["id"] - 1
+                    print("Find a valid twitter key: ", get_key[0]["id"])
+                    
                     # get twitter API
                     consumer_key = get_key[0]["detail"]["TWITTER_API_KEY"]
                     consumer_secret = get_key[0]["detail"]["TWITTER_API_KEY_SECRET"]
@@ -109,32 +111,30 @@ def select_a_valid_twitter_key(twitter_keys_file):
                     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
                     auth.set_access_token(access_token, access_token_secret)
                     api = tweepy.API(auth)
-                    break
+                    
+                    # update the selected twitter key's state
+                    print("Get a Valid twitter key and Updated its state")
+                    with open('twitter_keys.json', 'r') as f:
+                        update_key_state = json.load(f)
+                        keys = update_key_state['keys']
+                        keys[position]['flag'] = 'True'
+
+                    with open('twitter_keys.json', 'w') as f:
+                        json.dump(update_key_state, f, indent=2)
+                        
+                    return api, position
                     
                 else:
                     least_wait_in_s = max(least_wait_in_s, duration_in_s)
                     
             if len(get_key) == 0:
                 wait_time_in_s = LIMIT_IN_SEC - least_wait_in_s
-                print("Wait" + str(wait_time_in_s) + "seconds for Available Twitter key")
-                time.sleep(wait_time_in_s)
-                
-            else:
-                # update the selected twitter key's state
-                position = get_key[0]["id"] - 1
-                print("Get a Valid twitter key and Updated its state")
-                with open('twitter_keys.json', 'r') as f:
-                    update_key_state = json.load(f)
-                    keys = update_key_state['keys']
-                    keys[position]['flag'] = 'True'
-
-                with open('twitter_keys.json', 'w') as f:
-                    json.dump(update_key_state, f, indent=2)
+                print("Wait " + str(wait_time_in_s) + " seconds for Available Twitter key")
+                time.sleep(wait_time_in_s)             
                     
-            return api, position
 
 
-# In[ ]:
+# In[54]:
 
 
 # get twitter key
@@ -186,13 +186,14 @@ while True:
                 json.dump(update_key_state, f, indent=2)
         
     except tweepy.errors.TweepyException as e: # 当前key到达limit
-        print("Error:", e)
+        print("Error: ", e)
         
-        # update current twitter key's state
+        # update current twitter key's state and last used time
         with open('twitter_keys.json', 'r') as f:
             update_key_state = json.load(f)
             keys = update_key_state['keys']
             keys[position]['flag'] = 'False'
+            keys[position]['last_used'] = datetime.datetime.now().strftime(FMT)
 
         with open('twitter_keys.json', 'w') as f:
             json.dump(update_key_state, f, indent=2)
@@ -207,10 +208,10 @@ while True:
     
 
 
-# In[36]:
+# In[55]:
 
 
-print(couchdb.__version__)
+#print(couchdb.__version__)
 
 
 # In[ ]:
