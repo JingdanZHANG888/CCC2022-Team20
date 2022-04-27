@@ -11,7 +11,6 @@
 
 
 #pip install textblob
-nltk.download('vader_lexicon')
 
 
 # In[89]:
@@ -27,6 +26,8 @@ from textblob import TextBlob
 import sys
 import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+
+nltk.download('vader_lexicon')
 
 
 # In[90]:
@@ -239,12 +240,6 @@ while True:
     except StopIteration:
         continue
     
-
-
-# In[88]:
-
-
-#print(nltk.sentiment.vader)
 
 
 # In[ ]:
