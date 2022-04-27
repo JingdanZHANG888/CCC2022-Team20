@@ -2,4 +2,4 @@ tweepy==4.8.0
 couchdb==1.2.0
 jsons==1.1.2
 textblob==0.17.1
-nltk==3.6.5
+nltk==3.6.1
