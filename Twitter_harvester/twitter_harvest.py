@@ -7,7 +7,13 @@
 # housing key words: https://www.wordstream.com/popular-keywords/real-estate-keywords?aliId=eyJpIjoiZXQwMHhlbHc5WTBEdksxSSIsInQiOiJiT01uUkVrY0M4eTFRSDh0ZWc2bG13PT0ifQ%253D%253D \
 # income key words: https://www.thesaurus.com/browse/income
 
-# In[49]:
+# In[58]:
+
+
+#pip install textblob
+
+
+# In[59]:
 
 
 import datetime
@@ -16,9 +22,13 @@ import json
 import random
 import couchdb
 import tweepy
+from textblob import TextBlob
+import sys
+import nltk
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 
-# In[50]:
+# In[73]:
 
 
 FMT = '%Y-%m-%d %H:%M:%S'
@@ -37,7 +47,7 @@ mel_bounding_box = [144.9514,-37.8231,144.9749,-37.8059]
 mel_geo = '-37.840935,144.946457,200km'
 
 
-# In[51]:
+# In[74]:
 
 
 # initialize twitter keys state
@@ -56,7 +66,7 @@ f2 = open('keywords.json')
 keywords = json.load(f2)
 
 
-# In[52]:
+# In[75]:
 
 
 def random20_keywords(key_word_file):
@@ -75,7 +85,7 @@ def random20_keywords(key_word_file):
     return income_housing
 
 
-# In[53]:
+# In[76]:
 
 
 def select_a_valid_twitter_key(twitter_keys_file):
@@ -134,7 +144,27 @@ def select_a_valid_twitter_key(twitter_keys_file):
                     
 
 
-# In[54]:
+# In[79]:
+
+
+def analysis_Twitter_Sentiment(text):
+    sentiment = 0
+    analysis = TextBlob(text)
+    score = SentimentIntensityAnalyzer().polarity_scores(text)
+    neg = score['neg']
+    neu = score['neu']
+    pos = score['pos']
+    comp = score['compound']
+    if neg > pos:
+        sentiment = 'negative'
+    elif pos > neg:
+        sentiment = 'positive'
+    elif pos == neg:
+        sentiment = 'neutral'
+    return sentiment
+
+
+# In[ ]:
 
 
 # get twitter key
@@ -154,12 +184,14 @@ while True:
             tweet_place = tweet.place
             tweet_user_location = tweet.user.location
             tweet_Date = tweet.created_at.date()
+            tweet_sentiment = analysis_Twitter_Sentiment(tweet_text)
             tweet_info = {'id': str(tweet_id), 
                           'content': tweet_text, 
                           'coordinates': tweet_coord, 
                           'place': str(tweet_place),
                           'user_location': tweet_user_location,
-                          'created_date': str(tweet_Date)
+                          'created_date': str(tweet_Date),
+                          'sentiment': tweet_sentiment
                          } 
             print(tweet_info)
     
@@ -167,9 +199,9 @@ while True:
             server = couchdb.Server(url)
             # Set credentials if necessary
             server.resource.credentials = (user, password)
-            if "twitter" not in server:
-                server.create("twitter")
-            db = server["twitter"]
+            if "twitter_sentiment" not in server:
+                server.create("twitter_sentiment")
+            db = server["twitter_sentiment"]
             if str(tweet_info["id"]) not in db:
                 tweet_info["_id"] = str(tweet_info["id"])
                 db.save(tweet_info)
@@ -212,6 +244,12 @@ while True:
 
 
 #print(couchdb.__version__)
+
+
+# In[71]:
+
+
+nltk.download('vader_lexicon')
 
 
 # In[ ]:
