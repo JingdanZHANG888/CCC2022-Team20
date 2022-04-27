@@ -13,7 +13,7 @@
 #pip install textblob
 
 
-# In[89]:
+# In[98]:
 
 
 import datetime
@@ -30,7 +30,7 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 nltk.download('vader_lexicon')
 
 
-# In[90]:
+# In[105]:
 
 
 FMT = '%Y-%m-%d %H:%M:%S'
@@ -38,7 +38,7 @@ LIMIT_IN_SEC = 900
 WAIT = 300
 NOW = datetime.datetime.now().strftime(FMT)
 
-url = "http://172.26.132.116:5984"
+url = "http://172.26.131.170:5984"
 user = "admin"
 password = '170645'
 
@@ -49,7 +49,7 @@ mel_bounding_box = [144.9514,-37.8231,144.9749,-37.8059]
 mel_geo = '-37.840935,144.946457,200km'
 
 
-# In[91]:
+# In[106]:
 
 
 # initialize twitter keys state
@@ -68,7 +68,7 @@ f2 = open('keywords.json')
 keywords = json.load(f2)
 
 
-# In[92]:
+# In[107]:
 
 
 def random20_keywords(key_word_file):
@@ -87,7 +87,7 @@ def random20_keywords(key_word_file):
     return income_housing
 
 
-# In[93]:
+# In[108]:
 
 
 def select_a_valid_twitter_key(twitter_keys_file):
@@ -146,7 +146,7 @@ def select_a_valid_twitter_key(twitter_keys_file):
                     
 
 
-# In[94]:
+# In[109]:
 
 
 def analysis_Twitter_Sentiment(text):
