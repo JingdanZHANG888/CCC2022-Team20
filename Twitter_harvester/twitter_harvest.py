@@ -11,9 +11,10 @@
 
 
 #pip install textblob
+nltk.download('vader_lexicon')
 
 
-# In[59]:
+# In[89]:
 
 
 import datetime
@@ -28,7 +29,7 @@ import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 
-# In[73]:
+# In[90]:
 
 
 FMT = '%Y-%m-%d %H:%M:%S'
@@ -47,7 +48,7 @@ mel_bounding_box = [144.9514,-37.8231,144.9749,-37.8059]
 mel_geo = '-37.840935,144.946457,200km'
 
 
-# In[74]:
+# In[91]:
 
 
 # initialize twitter keys state
@@ -66,7 +67,7 @@ f2 = open('keywords.json')
 keywords = json.load(f2)
 
 
-# In[75]:
+# In[92]:
 
 
 def random20_keywords(key_word_file):
@@ -85,7 +86,7 @@ def random20_keywords(key_word_file):
     return income_housing
 
 
-# In[76]:
+# In[93]:
 
 
 def select_a_valid_twitter_key(twitter_keys_file):
@@ -144,7 +145,7 @@ def select_a_valid_twitter_key(twitter_keys_file):
                     
 
 
-# In[79]:
+# In[94]:
 
 
 def analysis_Twitter_Sentiment(text):
@@ -240,16 +241,10 @@ while True:
     
 
 
-# In[55]:
+# In[88]:
 
 
-#print(couchdb.__version__)
-
-
-# In[71]:
-
-
-nltk.download('vader_lexicon')
+#print(nltk.sentiment.vader)
 
 
 # In[ ]:
