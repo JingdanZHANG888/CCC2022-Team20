@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CCC</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Acme">
+
+    <!--    import stylesheet-->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script>
+        function quit(){
+            // clear session storage
+            sessionStorage.clear()
+
+            // submit a hidden form with the vanids. 
+            document.getElementById("quit").submit()
+        }     
+    </script>
+
+</head>
+<body>
+<div class="topnav">
+    <a href='/'><i class='fa fa-fw fa-home'></i>Home</a>
+    <a href='/analysis'><i class='fa fa-line-chart'></i> Analysis</a>
+    <a href='/analysis'><i class='fa fa-file-word-o'></i> Word Cloud</a>
+    <a href='/analysis'><i class='fa fa-users'></i> Members</a>
+</div>
+
+{{{body}}}
+
+    
+
+</body>
+</html>
+
