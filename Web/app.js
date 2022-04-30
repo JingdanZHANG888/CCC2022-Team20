@@ -16,7 +16,7 @@ const wordCloudRouter = require("./wordCloudRouter");
 
 // GET homepage
 app.get('/', function (req, res) {res.render('index',{layout:'main'});});
-
+app.get('/sydmap', function (req, res) {res.render('syd_index',{layout:'main'});});
 //Handle customer's homepage request
 app.use('/analysis', analysisRouter)
 
