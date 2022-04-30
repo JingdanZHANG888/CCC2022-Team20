@@ -1,13 +1,13 @@
 const express = require('express')
 
 // add our router
-const testRouter = express.Router()
+const analysisRouter = express.Router()
 
 // require the van controller
-const testController = require('./testController.js')
+const analysisController = require('./analysisController.js')
 
 // handle the GET request to obtain the full list of vans (For Customer Web App)
-testRouter.get('/', testController.test)
+analysisRouter.get('/', analysisController.analysis)
 
 // export the router
-module.exports = testRouter
+module.exports = analysisRouter

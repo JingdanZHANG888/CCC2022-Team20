@@ -11,13 +11,17 @@ app.engine('.hbs', exphbs({defaultlayout: 'main', extname: '.hbs'}));
 app.set('view engine', '.hbs');
 
 // set up account routes
-const testRouter = require("./testRouter");
+const analysisRouter = require("./analysisRouter");
+const wordCloudRouter = require("./wordCloudRouter");
 
 // GET homepage
 app.get('/', function (req, res) {res.render('index',{layout:'main'});});
 
 //Handle customer's homepage request
-app.use('/analysis', testRouter)
+app.use('/analysis', analysisRouter)
+
+//Handle customer's homepage request
+app.use('/wordCloud', wordCloudRouter)
 
 app.listen(process.env.PORT || 3000, () => {
     console.log('The library app is listening on port 3000...')

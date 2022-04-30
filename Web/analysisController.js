@@ -1,9 +1,9 @@
 // change the profile details
-const test = async (req, res) => {
+const analysis = async (req, res) => {
    
     try{
         console.log('11')
-        return res.render('test',{layout:'main'})
+        return res.render('analysis',{layout:'main'})
     } catch (err){
         res.status(400)
         console.log(err)
@@ -13,5 +13,5 @@ const test = async (req, res) => {
 }
 
 module.exports = {
-    test
+    analysis
 }
