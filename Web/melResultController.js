@@ -3,10 +3,15 @@ const nano = require("nano")("http://admin:170645@172.26.131.170:5984")
 const melResult = async (req, res) => {
     var db = nano.use('twitter_sentiment')
     var total = []
+    var count = 0
     try{
         await db.view('sentiment_analysis','count_sentiment',{group: true}).then((body) => {
             body.rows.forEach((result) => {
-                //console.log(result);
+                count += result.value
+                
+            });
+            body.rows.forEach((result) => {
+                result["percentage"] = (result.value/count*100).toFixed(2)
                 total.push(result)
             });
         });
