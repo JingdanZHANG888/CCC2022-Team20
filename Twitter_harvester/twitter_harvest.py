@@ -7,13 +7,7 @@
 # housing key words: https://www.wordstream.com/popular-keywords/real-estate-keywords?aliId=eyJpIjoiZXQwMHhlbHc5WTBEdksxSSIsInQiOiJiT01uUkVrY0M4eTFRSDh0ZWc2bG13PT0ifQ%253D%253D \
 # income key words: https://www.thesaurus.com/browse/income
 
-# In[58]:
-
-
-#pip install textblob
-
-
-# In[98]:
+# In[21]:
 
 
 import datetime
@@ -22,7 +16,6 @@ import json
 import random
 import couchdb
 import tweepy
-from textblob import TextBlob
 import sys
 import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
@@ -30,7 +23,7 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 nltk.download('vader_lexicon')
 
 
-# In[105]:
+# In[53]:
 
 
 FMT = '%Y-%m-%d %H:%M:%S'
@@ -43,20 +36,18 @@ user = "admin"
 password = '170645'
 
 # Latitude and longitude coordinates
-mel_corr = [-37.840935, 144.946457]
-# bounding box of Melbourne from AURIN SA2_2016
-mel_bounding_box = [144.9514,-37.8231,144.9749,-37.8059]
 mel_geo = '-37.840935,144.946457,200km'
+syd_geo = '-33.867487,151.206990,200km'
 
 
-# In[106]:
+# In[68]:
 
 
 # initialize twitter keys state
 f1 = open('twitter_keys.json')
 twitter_keys = json.load(f1)
 current_datetime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-for i in range(3):
+for i in range(4):
     twitter_keys["keys"][i]["last_used"] = '2022-04-10 00:00:00'
     twitter_keys["keys"][i]["flag"] = 'False'
 a_file = open('twitter_keys.json', "w")
@@ -68,7 +59,7 @@ f2 = open('keywords.json')
 keywords = json.load(f2)
 
 
-# In[107]:
+# In[69]:
 
 
 def random20_keywords(key_word_file):
@@ -87,7 +78,7 @@ def random20_keywords(key_word_file):
     return income_housing
 
 
-# In[108]:
+# In[70]:
 
 
 def select_a_valid_twitter_key(twitter_keys_file):
@@ -146,17 +137,15 @@ def select_a_valid_twitter_key(twitter_keys_file):
                     
 
 
-# In[109]:
+# In[71]:
 
 
 def analysis_Twitter_Sentiment(text):
     sentiment = 0
-    analysis = TextBlob(text)
     score = SentimentIntensityAnalyzer().polarity_scores(text)
     neg = score['neg']
     neu = score['neu']
     pos = score['pos']
-    comp = score['compound']
     if neg > pos:
         sentiment = 'negative'
     elif pos > neg:
@@ -166,20 +155,11 @@ def analysis_Twitter_Sentiment(text):
     return sentiment
 
 
-# In[ ]:
+# In[72]:
 
 
-# get twitter key
-api, position = select_a_valid_twitter_key(twitter_keys)
-
-# get query words
-query = random20_keywords(keywords)
-
-# get tweets
-tweets = tweepy.Cursor(api.search_tweets, q="housing", geocode=mel_geo).items() # test to set items(1)
-while True:
-    try:
-        for tweet in tweets:
+def harvest_tweets(tweets, dbname, key_position):
+    for tweet in tweets:
             tweet_id = tweet.id
             tweet_text = tweet.text
             tweet_coord = tweet.coordinates
@@ -201,25 +181,44 @@ while True:
             server = couchdb.Server(url)
             # Set credentials if necessary
             server.resource.credentials = (user, password)
-            if "twitter_sentiment" not in server:
-                server.create("twitter_sentiment")
-            db = server["twitter_sentiment"]
+            if dbname not in server:
+                server.create(dbname)
+            db = server[dbname]
             if str(tweet_info["id"]) not in db:
                 tweet_info["_id"] = str(tweet_info["id"])
                 db.save(tweet_info)
                 #print(tweet_info)
-            print("Sucessfully saved to Couchdb")
+            print("Sucessfully saved to Couchdb:", dbname)
             
             # update last used time of current twitter key
             with open('twitter_keys.json', 'r') as f:
                 update_key_state = json.load(f)
                 keys = update_key_state['keys']
-                keys[position]['last_used'] = datetime.datetime.now().strftime(FMT)
+                keys[key_position]['last_used'] = datetime.datetime.now().strftime(FMT)
 
             with open('twitter_keys.json', 'w') as f:
                 json.dump(update_key_state, f, indent=2)
+
+
+# In[73]:
+
+
+# get twitter key
+api, position = select_a_valid_twitter_key(twitter_keys)
+api2, position2 = select_a_valid_twitter_key(twitter_keys)
+
+# get query words
+query = random20_keywords(keywords)
+
+# get tweets
+mel_tweets = tweepy.Cursor(api.search_tweets, q=query, geocode=mel_geo).items()
+syd_tweets = tweepy.Cursor(api2.search_tweets, q=query, geocode=syd_geo).items()
+while True:
+    try:
+        harvest_tweets(mel_tweets, "twitter_sentiment", position)
+        harvest_tweets(syd_tweets, "twitter_sentiment_syd", position2)
         
-    except tweepy.errors.TweepyException as e: # 当前key到达limit
+    except tweepy.errors.TweepyException as e:
         print("Error: ", e)
         
         # update current twitter key's state and last used time
@@ -227,7 +226,9 @@ while True:
             update_key_state = json.load(f)
             keys = update_key_state['keys']
             keys[position]['flag'] = 'False'
+            keys[position2]['flag'] = 'False'
             keys[position]['last_used'] = datetime.datetime.now().strftime(FMT)
+            keys[position2]['last_used'] = datetime.datetime.now().strftime(FMT)
 
         with open('twitter_keys.json', 'w') as f:
             json.dump(update_key_state, f, indent=2)
@@ -235,7 +236,9 @@ while True:
         # begin a new twitter API
         query = random20_keywords(keywords)
         api, position = select_a_valid_twitter_key(twitter_keys)
-        tweets = tweepy.Cursor(api.search_tweets, q=query, geocode=mel_geo).items()      
+        api2, position2 = select_a_valid_twitter_key(twitter_keys)
+        mel_tweets = tweepy.Cursor(api.search_tweets, q=query, geocode=mel_geo).items()
+        syd_tweets = tweepy.Cursor(api2.search_tweets, q=query, geocode=syd_geo).items()      
         
     except StopIteration:
         continue
