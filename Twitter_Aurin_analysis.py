@@ -30,16 +30,7 @@ VIC_LAT = 144.58
 VIC_LNG = -37.60
 
 
-# In[24]:
-
-
-# function to add value labels
-def addlabels(x,y):
-    for i in range(len(x)):
-        plt.text(i, y[i], y[i], ha = 'center')
-
-
-# In[3]:
+# In[36]:
 
 
 url = "http://172.26.131.170:5984"
@@ -52,7 +43,7 @@ server.resource.credentials = (user, password)
 
 # ### 1.1 Sentiment Propertions Analysis
 
-# In[4]:
+# In[37]:
 
 
 # Get Map Reduce result from Couchdb
@@ -63,7 +54,7 @@ db_syd = server["twitter_sentiment_syd"]
 view_syd = db_syd.view('sentiment_analysis/count_sentiment',group=True)
 
 
-# In[5]:
+# In[38]:
 
 
 # Get the results and store into csv
@@ -96,7 +87,7 @@ view_syd_df['count'] = syd_sentiment_count_list
 view_syd_df['percentage'] = syd_percentage_list
 
 
-# In[7]:
+# In[41]:
 
 
 # Pie chart
