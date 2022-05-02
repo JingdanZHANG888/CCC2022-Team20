@@ -11,18 +11,20 @@ app.engine('.hbs', exphbs({defaultlayout: 'main', extname: '.hbs'}));
 app.set('view engine', '.hbs');
 
 // set up account routes
-const analysisRouter = require("./analysisRouter");
-const wordCloudRouter = require("./wordCloudRouter");
+const melResultRouter = require("./melResultRouter");
+const sydResultRouter = require("./sydResultRouter");
 
 // GET homepage
-app.get('/', function (req, res) {res.render('index',{layout:'main'});});
-app.get('/sydmap', function (req, res) {res.render('syd_index',{layout:'main'});});
+//app.get('/', function (req, res) {res.render('index',{layout:'main'});});
+app.use('/',melResultRouter)
+//app.get('/sydmap', function (req, res) {res.render('syd_index',{layout:'main'});});
+app.use('/sydmap',sydResultRouter)
 app.get('/member', function (req, res) {res.render('member',{layout:'main'});});
 //Handle customer's homepage request
-app.use('/analysis', analysisRouter)
+app.use('/analysis', function (req, res) {res.render('analysis',{layout:'main'});});
 
 //Handle customer's homepage request
-app.use('/wordCloud', wordCloudRouter)
+app.use('/wordCloud', function (req, res) {res.render('wordCloud',{layout:'main'});});
 
 app.listen(process.env.PORT || 3000, () => {
     console.log('The library app is listening on port 3000...')

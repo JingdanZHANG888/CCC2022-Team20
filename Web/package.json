@@ -27,6 +27,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.12.3",
     "morgan": "^1.10.0",
+    "nano": "^10.0.0",
     "node-geocoder": "^3.27.0",
     "node-open-geocoder": "^4.0.1",
     "passport": "^0.4.1",
