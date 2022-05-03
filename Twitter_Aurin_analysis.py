@@ -108,7 +108,7 @@ ax1.set_title('Tweets Sentiment Proportion in Melbourne')
 ax2.pie(syd_percentage_list, colors = colors_syd, labels=syd_sentiment_type_list, autopct='%1.1f%%', 
         startangle=90, pctdistance=0.85, explode = explode)
 ax2.set_title('Tweets Sentiment Proportion in Sydney')
-fig.savefig('./Web/frontend/public/images/tweets_sentiment_piechart.png')
+fig.savefig('./Web/public/images/tweets_sentiment_piechart.png')
 plt.tight_layout()
 plt.show()
 
@@ -128,9 +128,9 @@ def create_wordcloud(text, save_name):
     stopwords=stopwords,
     repeat=True)
     wc.generate(str(text))
-    wc.to_file('./Web/frontend/public/images/' + save_name)
+    wc.to_file('./Web/public/images/' + save_name)
     print("Word Cloud Saved Successfully")
-    path='./Web/frontend/public/images/' + save_name
+    path='./Web/public/images/' + save_name
     #display(Image.open(path))
 
 
@@ -292,7 +292,7 @@ plt.figure(figsize=(7,6))
 plt.bar(comparison_x,comparison_y, color ='maroon', width = 0.4)
 plt.title('Comparison of house price/income value between Melbourne and Sydney',fontsize=18)
 
-plt.savefig('./Web/frontend/public/images/Comparison.png',dpi=300)
+plt.savefig('./Web/public/images/Comparison.png',dpi=300)
 
 
 # In[34]:
@@ -323,7 +323,7 @@ for i in range(len(melb_y_list)):
 plt.title('10 suburbs in Melbourne with the smallest rate of house price and income',fontsize=18)
 melb_label = [re.sub("(.{16})", "\\1\n", label, 0, re.DOTALL) for label in melb_x]
 plt.xticks(range(10), melb_label)
-plt.savefig('./Web/frontend/public/images/Melbourne.png',dpi=300)
+plt.savefig('./Web/public/images/Melbourne.png',dpi=300)
 
 
 # In[32]:
@@ -352,7 +352,7 @@ for i in range(len(syd_y_list)):
 plt.title('10 suburbs in Sydney with the smallest rate of house price and income',fontsize=18)
 syd_label = [re.sub("(.{16})", "\\1\n", label, 0, re.DOTALL) for label in syd_x]
 plt.xticks(range(10), syd_label)
-plt.savefig('./Web/frontend/public/images/Sydney.png',dpi=300)
+plt.savefig('./Web/public/images/Sydney.png',dpi=300)
 
 
 # ### 2.2 Map of housing price/income using Aurin data
@@ -401,7 +401,7 @@ folium.Choropleth(
     legend_name='the rate of housing price and income' # legend title
 ).add_to(mean_nsw)
 
-mean_nsw.save('./Web/frontend/public/images/mean_nsw.html')
+mean_nsw.save('./Web/public/images/mean_nsw.html')
 #mean_nsw
 
 
@@ -422,7 +422,7 @@ folium.Choropleth(
     legend_name='the rate of housing price and income' # legend title
 ).add_to(mean_vic)
 
-mean_vic.save('./Web/frontend/public/images/mean_vic.html')
+mean_vic.save('./Web/public/images/mean_vic.html')
 #mean_vic
 
 
