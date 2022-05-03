@@ -6,7 +6,7 @@ COPY . /
 
 RUN npm cache clean --force && npm install --silent
 
-EXPOSE 3000
+EXPOSE 3080
 
 
 CMD ["npm","run","start"]
