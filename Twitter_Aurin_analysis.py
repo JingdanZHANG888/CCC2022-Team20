@@ -87,7 +87,7 @@ view_syd_df['count'] = syd_sentiment_count_list
 view_syd_df['percentage'] = syd_percentage_list
 
 
-# In[41]:
+# In[42]:
 
 
 # Pie chart
@@ -115,7 +115,7 @@ plt.show()
 
 # ### 1.2 Word Cloud
 
-# In[16]:
+# In[51]:
 
 
 #Function to Create Wordcloud
@@ -131,7 +131,7 @@ def create_wordcloud(text, save_name):
     wc.to_file('./Web/frontend/public/images/' + save_name)
     print("Word Cloud Saved Successfully")
     path='./Web/frontend/public/images/' + save_name
-    display(Image.open(path))
+    #display(Image.open(path))
 
 
 # In[11]:
