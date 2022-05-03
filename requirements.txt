@@ -8,3 +8,4 @@ requests==2.27.1
 regex==2021.8.3
 os-service-types==1.7.0
 image==1.5.33
+display==1.0.0
