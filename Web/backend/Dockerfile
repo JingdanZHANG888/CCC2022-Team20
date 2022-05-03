@@ -1,6 +1,6 @@
 FROM node:13.12.0-alpine 
 
-COPY ./
+COPY . /
 
 RUN npm cache clean --force && npm install --silent
 
