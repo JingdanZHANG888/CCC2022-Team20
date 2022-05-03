@@ -27,8 +27,8 @@ nltk.download('vader_lexicon')
 
 
 FMT = '%Y-%m-%d %H:%M:%S'
-LIMIT_IN_SEC = 900
-WAIT = 300
+LIMIT_IN_SEC = 600
+WAIT = 60
 NOW = datetime.datetime.now().strftime(FMT)
 
 url = "http://172.26.131.170:5984"
