@@ -17,7 +17,7 @@ import re # 2021.8.3
 import os
 import requests, zipfile, io
 import geopandas as gpd # 0.10.2
-import folium # 0.12.1.post1
+import folium # 0.12.1
 
 
 # In[3]:
