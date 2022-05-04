@@ -26,6 +26,6 @@ app.use('/analysis', function (req, res) {res.render('analysis',{layout:'main'})
 //Handle customer's homepage request
 app.use('/wordCloud', function (req, res) {res.render('wordCloud',{layout:'main'});});
 
-app.listen(process.env.PORT || 3000, () => {
+app.listen(process.env.PORT || 3000, '0.0.0.0', () => {
     console.log('The library app is listening on port 3000...')
-})
+});
