@@ -3,7 +3,7 @@
 
 # # 1. Twitter Analysis
 
-# In[2]:
+# In[52]:
 
 
 import couchdb
@@ -20,7 +20,7 @@ import geopandas as gpd # 0.10.2
 import folium # 0.12.1
 
 
-# In[3]:
+# In[53]:
 
 
 NSW_LAT = 151.081746
@@ -30,7 +30,7 @@ VIC_LAT = 144.58
 VIC_LNG = -37.60
 
 
-# In[36]:
+# In[54]:
 
 
 url = "http://172.26.131.170:5984"
@@ -43,7 +43,7 @@ server.resource.credentials = (user, password)
 
 # ### 1.1 Sentiment Propertions Analysis
 
-# In[37]:
+# In[55]:
 
 
 # Get Map Reduce result from Couchdb
@@ -54,7 +54,7 @@ db_syd = server["twitter_sentiment_syd"]
 view_syd = db_syd.view('sentiment_analysis/count_sentiment',group=True)
 
 
-# In[38]:
+# In[56]:
 
 
 # Get the results and store into csv
@@ -87,7 +87,7 @@ view_syd_df['count'] = syd_sentiment_count_list
 view_syd_df['percentage'] = syd_percentage_list
 
 
-# In[42]:
+# In[57]:
 
 
 # Pie chart
@@ -115,7 +115,7 @@ plt.show()
 
 # ### 1.2 Word Cloud
 
-# In[51]:
+# In[58]:
 
 
 #Function to Create Wordcloud
@@ -134,7 +134,7 @@ def create_wordcloud(text, save_name):
     #display(Image.open(path))
 
 
-# In[11]:
+# In[61]:
 
 
 # export dataset from Couchdb
@@ -148,7 +148,7 @@ syd_file = open('./data/twitter_sentiment_syd.json')
 twitter_syd = json.load(syd_file)
 
 
-# In[17]:
+# In[62]:
 
 
 # Create Melbourne word cloud
@@ -188,7 +188,7 @@ os.system('curl -X GET http://admin:170645@172.26.131.170:5984/income_2014/_all_
 os.system('curl -X GET http://admin:170645@172.26.131.170:5984/housing_2014/_all_docs\?include_docs\=true >           ./data/housing.json')
 
 
-# In[4]:
+# In[63]:
 
 
 # Read data
@@ -198,7 +198,7 @@ income_file = open('./data/income.json')
 income = json.load(income_file)
 
 
-# In[5]:
+# In[64]:
 
 
 # AURIN Housing
@@ -239,7 +239,7 @@ income_df['sa2_5dig16'] = income_sa2_5dig16
 income_df['mean_aud_2014_15'] = income_mean_aud_2014_15
 
 
-# In[ ]:
+# In[65]:
 
 
 # Download SA2 shapefile from website
@@ -251,7 +251,7 @@ z.extractall("./data")
 
 # ### 2.1 Bar charts for comparing house price/income using Aurin data
 
-# In[6]:
+# In[66]:
 
 
 house = housing_df.rename(columns={'sa22016code5digit':'sa2_5dig16'})
@@ -280,7 +280,7 @@ syd_income_sum = sum(syd_income_house['mean_aud_2014_15'])
 syd_average = syd_price_sum/syd_income_sum
 
 
-# In[20]:
+# In[67]:
 
 
 # draw comparison of house price/income value between Melbourne and Sydney 
@@ -295,7 +295,7 @@ plt.title('Comparison of house price/income value between Melbourne and Sydney',
 plt.savefig('./Web/public/images/Comparison.png',dpi=300)
 
 
-# In[34]:
+# In[68]:
 
 
 # Bar charts for comparing house price/income for suburbs in Melbourne and Sydney
@@ -326,7 +326,7 @@ plt.xticks(range(10), melb_label)
 plt.savefig('./Web/public/images/Melbourne.png',dpi=300)
 
 
-# In[32]:
+# In[69]:
 
 
 # Plot for Sydney
@@ -357,7 +357,7 @@ plt.savefig('./Web/public/images/Sydney.png',dpi=300)
 
 # ### 2.2 Map of housing price/income using Aurin data
 
-# In[10]:
+# In[70]:
 
 
 sf = gpd.read_file("./data/SA2_2016_AUST.shp")
@@ -382,7 +382,7 @@ geoJSON_nsw = gdf_nsw[['SA2_MAIN16','geometry']].to_json()
 geoJSON_vic = gdf_vic[['SA2_MAIN16','geometry']].to_json()
 
 
-# In[11]:
+# In[71]:
 
 
 # This code can be run locally but the file will be too large to upload.
