@@ -280,7 +280,7 @@ syd_income_sum = sum(syd_income_house['mean_aud_2014_15'])
 syd_average = syd_price_sum/syd_income_sum
 
 
-# In[67]:
+# In[72]:
 
 
 # draw comparison of house price/income value between Melbourne and Sydney 
@@ -288,7 +288,7 @@ syd_average = syd_price_sum/syd_income_sum
 comparison_x = ['Melbourne','Sydney']
 comparison_y = [melb_average,syd_average]
 
-plt.figure(figsize=(7,6))
+plt.figure(figsize=(10,6))
 plt.bar(comparison_x,comparison_y, color ='maroon', width = 0.4)
 plt.title('Comparison of house price/income value between Melbourne and Sydney',fontsize=18)
 
@@ -405,7 +405,7 @@ mean_nsw.save('./Web/public/images/mean_nsw.html')
 #mean_nsw
 
 
-# In[12]:
+# In[73]:
 
 
 mean_vic = folium.Map(location=[VIC_LNG, VIC_LAT], tiles="Stamen Terrain", zoom_start=8)
