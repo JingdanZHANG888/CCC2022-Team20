@@ -99,7 +99,7 @@ colors_syd = ['#c2c2f0','#ffb3e6','#ffcc99']
 explode = (0.05,0.05,0.05)
 
 # Draw pie charts
-fig, (ax1,ax2) = plt.subplots(1,2,figsize=(10,10))
+fig, (ax1,ax2) = plt.subplots(1,2,figsize=(10,5))
 
 ax1.pie(mel_percentage_list, colors = colors_mel, labels=mel_sentiment_type_list, autopct='%1.1f%%', 
         startangle=90, pctdistance=0.85, explode = explode)
