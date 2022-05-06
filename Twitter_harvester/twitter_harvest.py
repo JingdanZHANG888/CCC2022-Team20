@@ -92,48 +92,44 @@ def select_a_valid_twitter_key(twitter_keys_file):
         for key in twitter_keys["keys"]:
             if key["flag"] == "False":
                 current_valid_keys.append(key)
-        if len(current_valid_keys) == 0:
-            print("Wait " + str(WAIT) + " seconds for Available Twitter Key")
-            time.sleep(WAIT)
-        else:
-            for valid_key in current_valid_keys:
-                duration = datetime.datetime.now() - datetime.datetime.strptime(valid_key["last_used"], FMT)
-                duration_in_s = duration.total_seconds()
+        
+        for valid_key in current_valid_keys:
+            duration = datetime.datetime.now() - datetime.datetime.strptime(valid_key["last_used"], FMT)
+            duration_in_s = duration.total_seconds()
+            
+            if duration_in_s >= LIMIT_IN_SEC:
+                get_key.append(valid_key)
+                position = get_key[0]["id"] - 1
+                print("Find a valid twitter key: ", get_key[0]["id"])
                 
-                if duration_in_s >= LIMIT_IN_SEC:
-                    get_key.append(valid_key)
-                    position = get_key[0]["id"] - 1
-                    print("Find a valid twitter key: ", get_key[0]["id"])
+                # get twitter API
+                consumer_key = get_key[0]["detail"]["TWITTER_API_KEY"]
+                consumer_secret = get_key[0]["detail"]["TWITTER_API_KEY_SECRET"]
+                bearer_token = get_key[0]["detail"]["TWITTER_BEARER_TOKEN"]
+                access_token = get_key[0]["detail"]["TWITTER_ACCESS_TOKEN"]
+                access_token_secret = get_key[0]["detail"]["TWITTER_ACCESS_SECRET"]
+                auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+                auth.set_access_token(access_token, access_token_secret)
+                api = tweepy.API(auth)
+                
+                # update the selected twitter key's state
+                print("Get a Valid twitter key and Updated its state")
+                with open('twitter_keys.json', 'r') as f:
+                    update_key_state = json.load(f)
+                    keys = update_key_state['keys']
+                    keys[position]['flag'] = 'True'
+                with open('twitter_keys.json', 'w') as f:
+                    json.dump(update_key_state, f, indent=2)
                     
-                    # get twitter API
-                    consumer_key = get_key[0]["detail"]["TWITTER_API_KEY"]
-                    consumer_secret = get_key[0]["detail"]["TWITTER_API_KEY_SECRET"]
-                    bearer_token = get_key[0]["detail"]["TWITTER_BEARER_TOKEN"]
-                    access_token = get_key[0]["detail"]["TWITTER_ACCESS_TOKEN"]
-                    access_token_secret = get_key[0]["detail"]["TWITTER_ACCESS_SECRET"]
-                    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-                    auth.set_access_token(access_token, access_token_secret)
-                    api = tweepy.API(auth)
-                    
-                    # update the selected twitter key's state
-                    print("Get a Valid twitter key and Updated its state")
-                    with open('twitter_keys.json', 'r') as f:
-                        update_key_state = json.load(f)
-                        keys = update_key_state['keys']
-                        keys[position]['flag'] = 'True'
-
-                    with open('twitter_keys.json', 'w') as f:
-                        json.dump(update_key_state, f, indent=2)
-                        
-                    return api, position
-                    
-                else:
-                    least_wait_in_s = max(least_wait_in_s, duration_in_s)
-                    
-            if len(get_key) == 0:
-                wait_time_in_s = LIMIT_IN_SEC - least_wait_in_s
-                print("Wait " + str(wait_time_in_s) + " seconds for Available Twitter key")
-                time.sleep(wait_time_in_s)             
+                return api, position
+                
+            else:
+                least_wait_in_s = max(least_wait_in_s, duration_in_s)
+                
+        if len(get_key) == 0:
+            wait_time_in_s = LIMIT_IN_SEC - least_wait_in_s
+            print("Wait " + str(wait_time_in_s) + " seconds for Available Twitter key")
+            time.sleep(wait_time_in_s)             
                     
 
 
