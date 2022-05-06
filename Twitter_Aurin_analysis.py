@@ -292,7 +292,7 @@ plt.figure(figsize=(10,6))
 plt.bar(comparison_x,comparison_y, color ='maroon', width = 0.4)
 plt.title('Comparison of house price/income value between Melbourne and Sydney',fontsize=18)
 
-plt.savefig('./Web/public/images/Comparison.png',dpi=300)
+plt.savefig('./Web/public/images/comparison.png',dpi=300)
 
 
 # In[68]:
