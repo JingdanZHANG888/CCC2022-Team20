@@ -2,6 +2,7 @@
     --text-big: 32px;
     --text-medium: 29px;
     --text-small: 26px;
+    --text-verysmall: 23px;
     --font-heading:"Acme", sans-serif;
     --hover-colour:#fbd373;
     --bg-colour:whitesmoke;
@@ -11,13 +12,17 @@ h1,h2{
     font-family: var(--font-heading);
     font-size: var(--text-big);
 }
-h3,h4{
+h3{
     font-family: var(--font-heading);
     font-size: var(--text-medium);
 }
-p{
+h4{
     font-family: var(--font-heading);
     font-size: var(--text-small);
+}
+p{
+    font-family: var(--font-heading);
+    font-size: var(--text-verysmall);
 }
 h1{
     text-align: center;
@@ -25,9 +30,6 @@ h1{
 body {
     height: 100%;
     background-color: #e2f2d5;
-}
-.responsive-div{
-    width: 800px;
 }
 
 .topnav{
