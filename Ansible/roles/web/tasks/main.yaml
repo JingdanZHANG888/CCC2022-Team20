@@ -1,0 +1,27 @@
+#
+# Cluster and Cloud Computing - Team 20
+# 
+# Authors: 
+#
+#  Cenxi Si, Student ID: 1052447
+#  Yipei Liu, Student ID: 1067990
+#  Jingdan Zhang, Student ID: 1054101
+#  Chengyan Dai, Student ID: 1054219
+#  Ruimin Sun, Student ID: 1052182
+#
+
+---
+- # name: Create an image for frontend
+- name: Create an image
+  shell: sudo docker build -t js ~/CCC2022-Team20/Web/
+
+# Stop the existing Docker container and remove it if there is any Docker container named front
+- name: remove container
+  become: yes
+  community.docker.docker_container:
+    name: front
+    state: absent
+
+# Create a docker container for frontend
+- name: Create a container
+  shell: sudo docker run --name front -p 3000:3000 -d js

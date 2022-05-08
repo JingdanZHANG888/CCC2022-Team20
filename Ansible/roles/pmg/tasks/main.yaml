@@ -1,0 +1,31 @@
+#
+# Cluster and Cloud Computing - Team 20
+# 
+# Authors: 
+#
+#  Cenxi Si, Student ID: 1052447
+#  Yipei Liu, Student ID: 1067990
+#  Jingdan Zhang, Student ID: 1054101
+#  Chengyan Dai, Student ID: 1054219
+#  Ruimin Sun, Student ID: 1052182
+#
+
+---
+# Clone repository
+- name: Clone repository
+  shell: git clone https://JingdanZHANG888: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@github.com/JingdanZHANG888/CCC2022-Team20.git
+
+# Install dependencies
+- name: Install dependencies
+  tags: always
+  become: yes
+  pip:
+    requirements: /home/ubuntu/CCC2022-Team20/requirements.txt
+    state: latest
+    executable: pip3.6
+
+# Get the analysis results and graphs
+- name: run Twitter_Aurin_analysis.py
+  command: python3 /home/ubuntu/CCC2022-Team20/Twitter_Aurin_analysis.py
+  args:
+    chdir: /home/ubuntu/CCC2022-Team20

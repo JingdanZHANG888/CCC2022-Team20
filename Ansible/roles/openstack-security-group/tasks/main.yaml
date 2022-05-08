@@ -1,0 +1,39 @@
+#
+# Cluster and Cloud Computing - Team 20
+# 
+# Authors: 
+#
+#  Cenxi Si, Student ID: 1052447
+#  Yipei Liu, Student ID: 1067990
+#  Jingdan Zhang, Student ID: 1054101
+#  Chengyan Dai, Student ID: 1054219
+#  Ruimin Sun, Student ID: 1052182
+#
+
+---
+# Create a security group
+- name: Create a security group
+  openstack.cloud.security_group:
+    name: '{{ item.name }}'
+    description: '{{ item.description }}'
+    state: present
+  loop: '{{ security_groups }}'
+
+- name: Create a list of security group names
+  ansible.builtin.set_fact:
+    sg_names: '{{ sg_names|default([]) + [ item.name ] }}'
+  loop: '{{ security_groups }}'
+
+- ansible.builtin.debug:
+    msg: "Security group(s) {{ sg_names }} have been created."
+
+# Create security group rules
+- name: Create security group rules
+  openstack.cloud.security_group_rule:
+    security_group: '{{ item.name }}'
+    protocol: '{{ item.protocol }}'
+    port_range_min: '{{ item.port_range_min }}'
+    port_range_max: '{{ item.port_range_max }}'
+    remote_ip_prefix: '{{ item.remote_ip_prefix }}'
+    state: present
+  loop: '{{ security_groups }}'

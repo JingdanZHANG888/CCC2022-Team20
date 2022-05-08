@@ -1,0 +1,51 @@
+#
+# Cluster and Cloud Computing - Team 20
+# 
+# Authors: 
+#
+#  Cenxi Si, Student ID: 1052447
+#  Yipei Liu, Student ID: 1067990
+#  Jingdan Zhang, Student ID: 1054101
+#  Chengyan Dai, Student ID: 1054219
+#  Ruimin Sun, Student ID: 1052182
+#
+
+# Common vars
+availability_zone: melbourne-qh2-uom
+instance_image: aaddbad8-87d7-4ed7-9382-409b9bc42ca6 #NeCTAR Ubuntu 18.04 LTS (Bionic) amd64 (with Docker)
+instance_key_name: assignment2
+instance_flavor: uom.mse.1c4g
+
+# Volume
+volumes:
+  - vol_name: instance1_vol
+    vol_size: 50
+  - vol_name: instance2_vol
+    vol_size: 50
+  - vol_name: instance3_vol
+    vol_size: 50
+  - vol_name: instance4_vol
+    vol_size: 50
+
+# Security group
+security_groups:
+  - name: common-security-group
+    description: "security group for each instance"
+    protocol: tcp
+    port_range_min: 1
+    port_range_max: 65535
+    remote_ip_prefix: 0.0.0.0/0
+
+
+# Instance
+instances:
+  - name: instance1
+    volumes: ['instance1_vol']
+  - name: instance2
+    volumes: ['instance2_vol']
+  - name: instance3
+    volumes: ['instance3_vol']
+  - name: instance4
+    volumes: ['instance4_vol']
+
+

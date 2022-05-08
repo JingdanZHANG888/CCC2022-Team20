@@ -1,0 +1,39 @@
+#
+# Cluster and Cloud Computing - Team 20
+# 
+# Authors: 
+#
+#  Cenxi Si, Student ID: 1052447
+#  Yipei Liu, Student ID: 1067990
+#  Jingdan Zhang, Student ID: 1054101
+#  Chengyan Dai, Student ID: 1054219
+#  Ruimin Sun, Student ID: 1052182
+#
+
+---
+# Clone repository
+- name: Clone repository
+  shell: git clone https://JingdanZHANG888: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@github.com/JingdanZHANG888/CCC2022-Team20.git
+
+# Create Docker config directory
+- name: Create Docker config directory
+  
+  become: yes
+  file:
+    path: "~/config/"
+    state: 'directory'
+
+- #name: Create an image.
+- name: Create an image
+  shell: sudo docker build -t tweet ~/CCC2022-Team20/Twitter_harvester/
+
+# Stop existing Docker containers for Twitter Harvesters and remove them (if any)
+- name: Stop existed container
+  become: yes
+  community.docker.docker_container:
+    name: harvest
+    state: absent
+
+- name: Create a container
+  shell: sudo docker run --name harvest -p 8081:80 -d tweet
+

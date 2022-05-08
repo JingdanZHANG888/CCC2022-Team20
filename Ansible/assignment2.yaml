@@ -1,0 +1,51 @@
+#
+# Cluster and Cloud Computing - Team 20
+# 
+# Authors: 
+#
+#  Cenxi Si, Student ID: 1052447
+#  Yipei Liu, Student ID: 1067990
+#  Jingdan Zhang, Student ID: 1054101
+#  Chengyan Dai, Student ID: 1054219
+#  Ruimin Sun, Student ID: 1052182
+#
+
+# Install dependencies, Docker and couchdb
+
+- hosts: database
+  vars_files:
+    - host_vars/couchdb_vars.yaml
+  gather_facts: true
+
+  roles:
+    - role: datacommon
+    - role: docker
+    - role: volumes
+    - role: couchdb_setup
+
+- hosts: master
+  vars_files:
+    - host_vars/couchdb_vars.yaml
+  gather_facts: true
+
+  roles:
+    - role: couchdb_set_cluster
+
+# Install Twitter Harvest and run a Docker container of it
+- hosts: master
+  gather_facts: true
+
+  roles:
+    - role: twitter
+  
+# Install dependencies, Docker and run a analysis python file and a Docker container of web
+- hosts: webnode
+  gather_facts: true
+
+  roles:
+    - role: datacommon
+    - role: docker
+    - role: volumes
+    - role: pmg
+    - role: web
+  

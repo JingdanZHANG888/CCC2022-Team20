@@ -1,0 +1,32 @@
+#
+# Cluster and Cloud Computing - Team 20
+# 
+# Authors: 
+#
+#  Cenxi Si, Student ID: 1052447
+#  Yipei Liu, Student ID: 1067990
+#  Jingdan Zhang, Student ID: 1054101
+#  Chengyan Dai, Student ID: 1054219
+#  Ruimin Sun, Student ID: 1052182
+#
+
+---
+- name: Gather facts of remote host
+  ansible.builtin.setup:
+    gather_subset: all
+
+- name: Install dependencies
+  tags: always
+  become: yes
+  ansible.builtin.apt:
+    name: ['apt-transport-https', 'build-essential', 'ca-certificates', 'curl', 'git', 'python3-dev', 'python3-pip', 'python3-setuptools', 'software-properties-common', 'unzip', 'vim']
+    state: latest
+    install_recommends: no
+    update_cache: yes
+
+- name: Update pip
+  tags: always
+  become: yes
+  ansible.builtin.pip:
+    name: ['pip']
+    state: latest

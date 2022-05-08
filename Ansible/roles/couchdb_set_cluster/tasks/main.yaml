@@ -1,0 +1,55 @@
+#
+# Cluster and Cloud Computing - Team 20
+# 
+# Authors: 
+#
+#  Cenxi Si, Student ID: 1052447
+#  Yipei Liu, Student ID: 1067990
+#  Jingdan Zhang, Student ID: 1054101
+#  Chengyan Dai, Student ID: 1054219
+#  Ruimin Sun, Student ID: 1052182
+#
+
+# set couchdb cluster
+---
+- name: Enable cluster
+  shell: |
+    curl -XPOST "http://{{ user }}:{{ password }}@{{ master }}:5984/_cluster_setup" \
+      --header "Content-Type: application/json" \
+      --data "{\"action\": \"enable_cluster\", \"bind_address\":\"0.0.0.0\",\
+              \"username\": \"{{ user }}\", \"password\":\"{{ password }}\", \"port\": \"5984\",\
+              \"remote_node\": \"{{ item }}\", \"node_count\": \"3\",\
+              \"remote_current_user\":\"{{ user }}\", \"remote_current_password\":\"{{ password }}\"}"
+  loop: "{{ groups['nodes'] }}"
+
+- name: Add nodes to CouchDB cluster
+  shell: |
+    curl -XPOST "http://{{ user }}:{{ password }}@{{ master }}:5984/_cluster_setup" \
+      --header "Content-Type: application/json" \
+      --data "{\"action\": \"add_node\", \"host\":\"{{ item }}\",\
+             \"port\": \"5984\", \"username\": \"{{ user }}\", \"password\":\"{{ password }}\"}"
+  loop: "{{ groups['nodes'] }}"
+
+- name: Get Master node
+  shell: |
+    curl -XGET "http://{{ user }}:{{ password }}@{{ master }}:5984/"
+
+- name: Finish couchdb cluster setup
+  shell: |
+    curl -XPOST "http://{{ user }}:{{ password }}@{{ master }}:5984/_cluster_setup" \
+      --header "Content-Type: application/json" \
+      --data "{\"action\":\"finish_cluster\"}"    
+
+- name: Check whether the cluster configuration is correct
+  shell: |
+    curl -X GET "http://{{ user }}:{{ password }}@{{ item }}:5984/_membership"
+  loop: "{{ groups['nodes'] }}"
+
+- name: Adding a database to one node of the cluster
+  shell: |
+    curl -XPUT "http://{{ user }}:{{ password }}@{{ master }}:5984/twitter"
+
+- name: makes it to be created on all other nodes as well
+  shell: |
+    curl -X GET "http://{{ user }}:{{ password }}@{{ item }}:5984/_all_dbs"
+  loop: "{{ groups['nodes'] }}"

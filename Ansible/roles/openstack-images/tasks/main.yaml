@@ -1,0 +1,28 @@
+#
+# Cluster and Cloud Computing - Team 20
+# 
+# Authors: 
+#
+#  Cenxi Si, Student ID: 1052447
+#  Yipei Liu, Student ID: 1067990
+#  Jingdan Zhang, Student ID: 1054101
+#  Chengyan Dai, Student ID: 1054219
+#  Ruimin Sun, Student ID: 1052182
+#
+
+---
+# Show all available Openstack images
+- name: Retrieve all available Openstack images
+  openstack.cloud.image_info:
+  register: image_result
+
+- name: Get image names and Ids
+  ansible.builtin.set_fact:
+    image_facts: "{{ image_facts|default([]) + [ {'name': item.name, 'id': item.id} ] }}"
+  loop: '{{ image_result.openstack_image }}'
+  when: item.name is defined
+
+- name: Show images
+  ansible.builtin.debug:
+    msg: "Image name: {{ item.name }}; Image id: {{ item.id }}"
+  loop: '{{ image_facts }}'

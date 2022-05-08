@@ -1,0 +1,51 @@
+#
+# Cluster and Cloud Computing - Team 20
+# 
+# Authors: 
+#
+#  Cenxi Si, Student ID: 1052447
+#  Yipei Liu, Student ID: 1067990
+#  Jingdan Zhang, Student ID: 1054101
+#  Chengyan Dai, Student ID: 1054219
+#  Ruimin Sun, Student ID: 1052182
+#
+
+---
+# Create an instance on NeCTAR
+- name: Create an instance
+  openstack.cloud.server:
+    name: '{{ item.name }}'
+    image: '{{ instance_image }}'
+    key_name: '{{ instance_key_name }}'
+    flavor: '{{ instance_flavor }}'
+    availability_zone: '{{ availability_zone }}'
+    security_groups: '{{ sg_names }}'
+    volumes: '{{ item.volumes }}'
+    auto_floating_ip: yes
+    wait: yes
+    timeout: 600
+    state: present
+  loop: '{{ instances }}'
+  register: os_instance
+
+- ansible.builtin.debug:
+    msg: "Instance {{ item.openstack.name }} has been created. IP address is {{ item.openstack.public_v4 }}"
+  loop: '{{ os_instance.results }}'
+  when: item.openstack is defined
+
+- name: Wait for connection
+  ansible.builtin.wait_for:
+    host: "{{ item.openstack.public_v4 }}"
+    port: 22
+    timeout: 120
+    search_regex: OpenSSH
+  loop: '{{ os_instance.results }}'
+  when: item.openstack is defined
+
+# Add hosts to Ansible in-memory inventory
+- name: Add host
+  ansible.builtin.add_host:
+    name: '{{ item.openstack.public_v4 }}'
+    groups: COMP90024
+  loop: '{{ os_instance.results }}'
+  when: item.openstack is defined
