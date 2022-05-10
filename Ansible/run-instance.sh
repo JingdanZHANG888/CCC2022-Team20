@@ -12,4 +12,4 @@
 #  Ruimin Sun, Student ID: 1052182
 #
 
-. ./openrc.sh; ansible-playbook instance.yaml
+. ./unimelb-comp90024-2022-grp-20-openrc.sh; ansible-playbook instance.yaml
