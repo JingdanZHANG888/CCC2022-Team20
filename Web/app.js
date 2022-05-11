@@ -8,7 +8,7 @@
 //  * Cenxi Si 1052447 China
 //  * Yipei Liu 1067990 China
 //  * Jingdan Zhang 1054101 China
-//  * Chengyan Dai 1054219 China
+//  * Chengyan Dai 1054219 Melbourne
 //  * Ruimin Sun 1052182 China
 //
 
