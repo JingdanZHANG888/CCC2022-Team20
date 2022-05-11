@@ -19,7 +19,7 @@ However, judging from the positive rate of emotion in tweets, Melbourne still pe
 better compared to Sydney and we could say that it is a livable city.
 ## Links
 **Web Application Link** :
-http://172.26.131.132:3000
+http://172.26.131.132:3000 (requires connection through Unimelb VPN)
 
 **YouTube Demonstration Link** :
 
