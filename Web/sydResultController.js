@@ -1,3 +1,18 @@
+//
+// Part of COMP90024 Cluster and Cloud Computing from The University of Melbourne 
+//
+// Assignment 2 - Team 20
+//
+// Collective Team Details (Member's Name/Student ID/Location): 
+//
+//  * Cenxi Si 1052447 China
+//  * Yipei Liu 1067990 China
+//  * Jingdan Zhang 1054101 China
+//  * Chengyan Dai 1054219 China
+//  * Ruimin Sun 1052182 China
+//
+
+
 const nano = require("nano")("http://admin:170645@172.26.131.170:5984")
 // change the profile details
 const sydResult = async (req, res) => {
