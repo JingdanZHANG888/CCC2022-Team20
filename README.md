@@ -23,12 +23,12 @@ http://172.26.131.132:3000
 
 **YouTube Demonstration Link** :
 
-## Team members
-- Cenxi Si 1052447 located in China
-- Yipei Liu 1067990 located in China
-- Jingdan Zhang 1054101 located in China
-- Chengyan Dai 1054219 located in Melbourne
-- Ruimin Sun 1052182 located in China
+## Collective Team Details (Member's Name/Student ID/Location)
+- Cenxi Si 1052447 China
+- Yipei Liu 1067990 China
+- Jingdan Zhang 1054101 China
+- Chengyan Dai 1054219 Melbourne
+- Ruimin Sun 1052182 China
 
 ## Project Structure
 - Ansible: source code for system deployment
