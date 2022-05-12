@@ -24,7 +24,7 @@ from operator import itemgetter
 nltk.download('vader_lexicon')
 
 
-# In[17]:
+# In[50]:
 
 
 FMT = '%Y-%m-%d %H:%M:%S'
@@ -41,7 +41,7 @@ mel_geo = '-37.840935,144.946457,200km'
 syd_geo = '-33.867487,151.206990,200km'
 
 
-# In[19]:
+# In[67]:
 
 
 # initialize twitter keys state
@@ -50,7 +50,6 @@ twitter_keys = json.load(f1)
 current_datetime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 for i in range(4):
     twitter_keys["keys"][i]["last_used"] = '2022-04-10 00:00:00'
-    twitter_keys["keys"][i]["flag"] = 'False'
 a_file = open('twitter_keys.json', "w")
 json.dump(twitter_keys, a_file)
 a_file.close()
@@ -60,7 +59,7 @@ f2 = open('keywords.json')
 keywords = json.load(f2)
 
 
-# In[5]:
+# In[52]:
 
 
 def random20_keywords(key_word_file):
@@ -79,7 +78,7 @@ def random20_keywords(key_word_file):
     return income_housing
 
 
-# In[12]:
+# In[53]:
 
 
 def select_a_valid_twitter_key(twitter_keys_file, remove_key):
@@ -112,15 +111,16 @@ def select_a_valid_twitter_key(twitter_keys_file, remove_key):
             
         # if there is a valid key existing, we use the key which rests longest.
         else:
-            duration_list.sort(key = itemgetter(0))
-            index = duration_list[-1][1]
-            print("Find a valid twitter key: ", index+1)
+            get_key = sorted(get_key, key=lambda d: d['last_used']) 
+            index = get_key[0]["id"]-1
+            print("Find a valid twitter key: ", get_key[0]["id"])
+            
             # get twitter API
-            consumer_key = get_key[index]["detail"]["TWITTER_API_KEY"]
-            consumer_secret = get_key[index]["detail"]["TWITTER_API_KEY_SECRET"]
-            bearer_token = get_key[index]["detail"]["TWITTER_BEARER_TOKEN"]
-            access_token = get_key[index]["detail"]["TWITTER_ACCESS_TOKEN"]
-            access_token_secret = get_key[index]["detail"]["TWITTER_ACCESS_SECRET"]
+            consumer_key = get_key[0]["detail"]["TWITTER_API_KEY"]
+            consumer_secret = get_key[0]["detail"]["TWITTER_API_KEY_SECRET"]
+            bearer_token = get_key[0]["detail"]["TWITTER_BEARER_TOKEN"]
+            access_token = get_key[0]["detail"]["TWITTER_ACCESS_TOKEN"]
+            access_token_secret = get_key[0]["detail"]["TWITTER_ACCESS_SECRET"]
             auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
             auth.set_access_token(access_token, access_token_secret)
             api = tweepy.API(auth)
@@ -128,7 +128,7 @@ def select_a_valid_twitter_key(twitter_keys_file, remove_key):
             return api, index
 
 
-# In[7]:
+# In[54]:
 
 
 def analysis_Twitter_Sentiment(text):
@@ -146,7 +146,7 @@ def analysis_Twitter_Sentiment(text):
     return sentiment
 
 
-# In[23]:
+# In[55]:
 
 
 def harvest_tweets(tweets, dbname, key_position):
@@ -203,9 +203,27 @@ query = random20_keywords(keywords)
 # get tweets
 mel_tweets = tweepy.Cursor(api.search_tweets, q=query, geocode=mel_geo).items()
 syd_tweets = tweepy.Cursor(api2.search_tweets, q=query, geocode=syd_geo).items()
+
 while True:
+    
     try:
         harvest_tweets(mel_tweets, "twitter_sentiment", position)
+        
+    except tweepy.errors.TweepyException as e:
+        print("Error: ", e)
+        print("Start to collect Sydney Tweets")
+        # update current twitter key's state and last used time
+        with open('twitter_keys.json', 'r') as f:
+            update_key_state = json.load(f)
+            keys = update_key_state['keys']
+            keys[position]['last_used'] = datetime.datetime.now().strftime(FMT)
+
+        with open('twitter_keys.json', 'w') as f:
+            json.dump(update_key_state, f, indent=2)
+        pass
+    
+    
+    try:
         harvest_tweets(syd_tweets, "twitter_sentiment_syd", position2)
         
     except tweepy.errors.TweepyException as e:
@@ -215,7 +233,6 @@ while True:
         with open('twitter_keys.json', 'r') as f:
             update_key_state = json.load(f)
             keys = update_key_state['keys']
-            keys[position]['last_used'] = datetime.datetime.now().strftime(FMT)
             keys[position2]['last_used'] = datetime.datetime.now().strftime(FMT)
 
         with open('twitter_keys.json', 'w') as f:
@@ -227,7 +244,7 @@ while True:
         api2, position2 = select_a_valid_twitter_key(twitter_keys, position)
         mel_tweets = tweepy.Cursor(api.search_tweets, q=query, geocode=mel_geo).items()
         syd_tweets = tweepy.Cursor(api2.search_tweets, q=query, geocode=syd_geo).items()      
-        
+        print("Start to collect Melbourne Tweets")
     except StopIteration:
         continue
     
