@@ -1,11 +1,5 @@
 #!/usr/bin/env python
 # coding: utf-8
-# COMP90024 Assignment 2 Team 20
-# Cenxi Si 1052447 located in China
-# Yipei Liu 1067990 located in China
-# Jingdan Zhang 1054101 located in China
-# Chengyan Dai 1054219 located in Melbourne
-# Ruimin Sun 1052182 located in China
 
 # ## Twitter Harvest
 
@@ -13,7 +7,7 @@
 # housing key words: https://www.wordstream.com/popular-keywords/real-estate-keywords?aliId=eyJpIjoiZXQwMHhlbHc5WTBEdksxSSIsInQiOiJiT01uUkVrY0M4eTFRSDh0ZWc2bG13PT0ifQ%253D%253D \
 # income key words: https://www.thesaurus.com/browse/income
 
-# In[21]:
+# In[3]:
 
 
 import datetime
@@ -25,15 +19,16 @@ import tweepy
 import sys
 import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from operator import itemgetter
 
 nltk.download('vader_lexicon')
 
 
-# In[53]:
+# In[17]:
 
 
 FMT = '%Y-%m-%d %H:%M:%S'
-LIMIT_IN_SEC = 600
+LIMIT_IN_SEC = 900
 WAIT = 60
 NOW = datetime.datetime.now().strftime(FMT)
 
@@ -46,7 +41,7 @@ mel_geo = '-37.840935,144.946457,200km'
 syd_geo = '-33.867487,151.206990,200km'
 
 
-# In[68]:
+# In[19]:
 
 
 # initialize twitter keys state
@@ -65,7 +60,7 @@ f2 = open('keywords.json')
 keywords = json.load(f2)
 
 
-# In[69]:
+# In[5]:
 
 
 def random20_keywords(key_word_file):
@@ -84,62 +79,56 @@ def random20_keywords(key_word_file):
     return income_housing
 
 
-# In[70]:
+# In[12]:
 
 
-def select_a_valid_twitter_key(twitter_keys_file):
+def select_a_valid_twitter_key(twitter_keys_file, remove_key):
     f1 = open('twitter_keys.json')
     twitter_keys = json.load(f1)
     # get all valid twitter keys
-    current_valid_keys = []
-    least_wait_in_s = 0
     get_key = []
+    duration_list = []
+    rest_time = []
+    # remove melbourne used key
+    if remove_key != None:
+        del twitter_keys["keys"][remove_key]
     while True:
-        for key in twitter_keys["keys"]:
-            if key["flag"] == "False":
-                current_valid_keys.append(key)
-        
-        for valid_key in current_valid_keys:
+        for valid_key in twitter_keys["keys"]:
             duration = datetime.datetime.now() - datetime.datetime.strptime(valid_key["last_used"], FMT)
             duration_in_s = duration.total_seconds()
-            
-            if duration_in_s >= LIMIT_IN_SEC:
+            position = valid_key["id"] - 1
+            rest_time.append(duration_in_s)
+      
+            if duration_in_s >= 900:
                 get_key.append(valid_key)
-                position = get_key[0]["id"] - 1
-                print("Find a valid twitter key: ", get_key[0]["id"])
+                add_info = [duration_in_s, position]
+                duration_list.append(add_info)
                 
-                # get twitter API
-                consumer_key = get_key[0]["detail"]["TWITTER_API_KEY"]
-                consumer_secret = get_key[0]["detail"]["TWITTER_API_KEY_SECRET"]
-                bearer_token = get_key[0]["detail"]["TWITTER_BEARER_TOKEN"]
-                access_token = get_key[0]["detail"]["TWITTER_ACCESS_TOKEN"]
-                access_token_secret = get_key[0]["detail"]["TWITTER_ACCESS_SECRET"]
-                auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-                auth.set_access_token(access_token, access_token_secret)
-                api = tweepy.API(auth)
-                
-                # update the selected twitter key's state
-                print("Get a Valid twitter key and Updated its state")
-                with open('twitter_keys.json', 'r') as f:
-                    update_key_state = json.load(f)
-                    keys = update_key_state['keys']
-                    keys[position]['flag'] = 'True'
-                with open('twitter_keys.json', 'w') as f:
-                    json.dump(update_key_state, f, indent=2)
-                    
-                return api, position
-                
-            else:
-                least_wait_in_s = max(least_wait_in_s, duration_in_s)
-                
+        # if there is no valid key to select, the system needs to wait
         if len(get_key) == 0:
-            wait_time_in_s = LIMIT_IN_SEC - least_wait_in_s
+            wait_time_in_s = LIMIT_IN_SEC - max(rest_time)
             print("Wait " + str(wait_time_in_s) + " seconds for Available Twitter key")
-            time.sleep(wait_time_in_s)             
-                    
+            time.sleep(wait_time_in_s)
+            
+        # if there is a valid key existing, we use the key which rests longest.
+        else:
+            duration_list.sort(key = itemgetter(0))
+            index = duration_list[-1][1]
+            print("Find a valid twitter key: ", index+1)
+            # get twitter API
+            consumer_key = get_key[index]["detail"]["TWITTER_API_KEY"]
+            consumer_secret = get_key[index]["detail"]["TWITTER_API_KEY_SECRET"]
+            bearer_token = get_key[index]["detail"]["TWITTER_BEARER_TOKEN"]
+            access_token = get_key[index]["detail"]["TWITTER_ACCESS_TOKEN"]
+            access_token_secret = get_key[index]["detail"]["TWITTER_ACCESS_SECRET"]
+            auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+            auth.set_access_token(access_token, access_token_secret)
+            api = tweepy.API(auth)
+                
+            return api, index
 
 
-# In[71]:
+# In[7]:
 
 
 def analysis_Twitter_Sentiment(text):
@@ -157,7 +146,7 @@ def analysis_Twitter_Sentiment(text):
     return sentiment
 
 
-# In[72]:
+# In[23]:
 
 
 def harvest_tweets(tweets, dbname, key_position):
@@ -177,7 +166,6 @@ def harvest_tweets(tweets, dbname, key_position):
                           'created_date': str(tweet_Date),
                           'sentiment': tweet_sentiment
                          } 
-            print(tweet_info)
     
             # add to Couchdb
             server = couchdb.Server(url)
@@ -189,8 +177,8 @@ def harvest_tweets(tweets, dbname, key_position):
             if str(tweet_info["id"]) not in db:
                 tweet_info["_id"] = str(tweet_info["id"])
                 db.save(tweet_info)
-                #print(tweet_info)
-            print("Sucessfully saved to Couchdb:", dbname)
+                print(tweet_info)
+                print("Sucessfully saved to Couchdb:", dbname)
             
             # update last used time of current twitter key
             with open('twitter_keys.json', 'r') as f:
@@ -202,12 +190,12 @@ def harvest_tweets(tweets, dbname, key_position):
                 json.dump(update_key_state, f, indent=2)
 
 
-# In[73]:
+# In[ ]:
 
 
 # get twitter key
-api, position = select_a_valid_twitter_key(twitter_keys)
-api2, position2 = select_a_valid_twitter_key(twitter_keys)
+api, position = select_a_valid_twitter_key(twitter_keys, None)
+api2, position2 = select_a_valid_twitter_key(twitter_keys, position)
 
 # get query words
 query = random20_keywords(keywords)
@@ -227,8 +215,6 @@ while True:
         with open('twitter_keys.json', 'r') as f:
             update_key_state = json.load(f)
             keys = update_key_state['keys']
-            keys[position]['flag'] = 'False'
-            keys[position2]['flag'] = 'False'
             keys[position]['last_used'] = datetime.datetime.now().strftime(FMT)
             keys[position2]['last_used'] = datetime.datetime.now().strftime(FMT)
 
@@ -237,8 +223,8 @@ while True:
         
         # begin a new twitter API
         query = random20_keywords(keywords)
-        api, position = select_a_valid_twitter_key(twitter_keys)
-        api2, position2 = select_a_valid_twitter_key(twitter_keys)
+        api, position = select_a_valid_twitter_key(twitter_keys, None)
+        api2, position2 = select_a_valid_twitter_key(twitter_keys, position)
         mel_tweets = tweepy.Cursor(api.search_tweets, q=query, geocode=mel_geo).items()
         syd_tweets = tweepy.Cursor(api2.search_tweets, q=query, geocode=syd_geo).items()      
         
