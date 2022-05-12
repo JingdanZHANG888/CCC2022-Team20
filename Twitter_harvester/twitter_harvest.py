@@ -26,7 +26,6 @@ import tweepy
 import sys
 import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
-from operator import itemgetter
 
 nltk.download('vader_lexicon')
 
