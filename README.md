@@ -22,7 +22,7 @@ better compared to Sydney and we could say that it is a livable city.
 http://172.26.131.132:3000 (requires connection through Unimelb VPN)
 
 **YouTube Demonstration Link** :
-
+- Ansible deployment: https://youtu.be/zxmNIVBY1gQ
 ## Collective Team Details (Member's Name/Student ID/Location)
 - Cenxi Si 1052447 China
 - Yipei Liu 1067990 China
