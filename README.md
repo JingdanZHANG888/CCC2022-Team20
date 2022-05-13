@@ -1,4 +1,6 @@
-# CCC2022-Team20
+# COMP90024 Cluster and Cloud Computing Assignment 2 - Team 20
+# An Exploration of Liveablility in Melbourne
+
 ## Description
 Melbourne is one of the main cities in Australia which has repeatedly appeared in kinds of
 lists of most livable cities around the world, and the group assignment is dedicated to exploring
@@ -19,6 +21,7 @@ However, judging from the positive rate of emotion in tweets, Melbourne still pe
 better compared to Sydney and we could say that it is a livable city.
 ## Links
 **Web Application Link** :
+
 http://172.26.131.132:3000 (requires connection through Unimelb VPN)
 
 **YouTube Demonstration Link** :
