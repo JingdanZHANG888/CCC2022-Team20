@@ -20,10 +20,10 @@ import sys
 f1 = open('twitter_keys.json')
 keys = js.load(f1)
 
-api_key = keys["keys"][1]["detail"]["TWITTER_API_KEY"]
-api_secret = keys["keys"][1]["detail"]["TWITTER_API_KEY_SECRET"]
-access_token = keys["keys"][1]["detail"]["TWITTER_BEARER_TOKEN"]
-access_secret = keys["keys"][1]["detail"]["TWITTER_ACCESS_TOKEN"]
+api_key = keys["keys"][0]["detail"]["TWITTER_API_KEY"]
+api_secret = keys["keys"][0]["detail"]["TWITTER_API_KEY_SECRET"]
+access_token = keys["keys"][0]["detail"]["TWITTER_ACCESS_TOKEN"]
+access_secret = keys["keys"][0]["detail"]["TWITTER_ACCESS_SECRET"]
 
 #authentication
 auth = tweepy.OAuth1UserHandler(api_key,api_secret)
@@ -35,7 +35,7 @@ api = tweepy.API(auth)
 class Listener(tweepy.Stream):
 
     tweets = []
-    limit = 1
+    limit = 100
 
     
     def on_status(self,status):
@@ -79,7 +79,8 @@ stream_keywords = list_trans(housing_words)+list_trans(income_words)
 melb_bounding = [144.9514,-37.8231,144.9749,-37.8059]
 
 
-stream_tweet.filter(track=stream_keywords,languages=['en'])
+#stream_tweet.filter(locations=melb_bounding)
+stream_tweet.filter(track=stream_keywords)
 
 
 jsontext = {'tweets':[]}
