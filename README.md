@@ -1,4 +1,4 @@
-# COMP90024 Cluster and Cloud Computing Assignment 2 - Team 20
+# COMP90024 Assignment 2 - Team 20
 # An Exploration of Liveablility in Melbourne
 
 ## Description
