@@ -38,8 +38,9 @@
   shell: |
     curl -XPOST "http://{{ user }}:{{ password }}@{{ master }}:5984/_cluster_setup" \
       --header "Content-Type: application/json" \
-      --data "{\"action\":\"finish_cluster\"}"    
-
+      --data "{\"action\":\"finish_cluster\"}"   
+      
+# check couchdb is successfully setup
 - name: Check whether the cluster configuration is correct
   shell: |
     curl -X GET "http://{{ user }}:{{ password }}@{{ item }}:5984/_membership"
