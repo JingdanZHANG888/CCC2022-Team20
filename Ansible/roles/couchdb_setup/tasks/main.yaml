@@ -35,4 +35,4 @@
       COUCHDB_USER: "{{ user }}"
       COUCHDB_PASSWORD: "{{ password }}"
       COUCHDB_SECRET: "{{ cookie }}"
-      ERL_FLAGS: "-setcookie \"{{ cookie }}\" -name \"couchdb@{{ inventory_hostname }}\"" #inventory_hostname应该是当前node
+      ERL_FLAGS: "-setcookie \"{{ cookie }}\" -name \"couchdb@{{ inventory_hostname }}\"" 
