@@ -1,5 +1,5 @@
 # COMP90024 Assignment 2 - Team 20
-# An Exploration of Liveablility in Melbourne
+# An Exploration of Liveability in Melbourne
 
 ## Description
 Melbourne is one of the main cities in Australia which has repeatedly appeared in kinds of
